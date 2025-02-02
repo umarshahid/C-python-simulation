@@ -33,6 +33,10 @@ Here is a short video of the simulation's render screen:
   Your browser does not support the video tag.
 </video>
 
+
+https://github.com/user-attachments/assets/b0cd34c7-7ebf-4128-a706-eaff35fdc19e
+
+
 ## Setup
 
 ### Prerequisites & Installing Dependencies
