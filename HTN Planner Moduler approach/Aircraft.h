@@ -47,23 +47,22 @@ public:
     float get_heading() const;
     std::pair<float, float> get_position() const;
     std::pair<int, int> get_position_xy() const;
+	std::pair<int, int> get_target_position_xy() const;
 
     // Movement
     void move_to(float newLatitude, float newLongitude); // Initiate movement
     void move(float distance);
-    void update(SDL_Renderer* renderer); // Update function for simulation loop
+    void update(); // Update function for simulation loop
     void attack(Aircraft& target);
     void defend();
     bool is_alive() const;
-    void draw(SDL_Renderer* renderer) const;
     void adjustHeadingToNorth();
     void set_heading(float new_heading);
     void perform_radar_scan();
+	inline bool get_isMoving() { return is_moving; }
+	inline Radar* getRadar() { return &radar; }
 
 private:
     void update_position(); // Gradually move towards the target
-    static SDL_Texture* loadTexture(SDL_Renderer* renderer, const std::string& path);
-    void applyColorMod(SDL_Texture* texture) const;
-
 
 };

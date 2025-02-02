@@ -10,61 +10,9 @@ std::once_flag flag;
 std::unique_ptr<Simulation> Simulation::instance = nullptr;
 
 Simulation::Simulation()
-    : coordSystem(-90.0f, 90.0f, -180.0f, 180.0f, 1067, 600), window(nullptr), renderer(nullptr), quit(false), running(false) { // Initialize running to false
+    : coordSystem(-90.0f, 90.0f, -180.0f, 180.0f, 1067, 600), running(false) { // Initialize running to false
 
-    if (SDL_Init(SDL_INIT_VIDEO) != 0) {
-        throw std::runtime_error(std::string("SDL_Init Error: ") + SDL_GetError());
-    }
-
-    window = SDL_CreateWindow("Aircraft Simulation", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 1067, 600, SDL_WINDOW_SHOWN);
-    if (!window) {
-        SDL_Quit();
-        throw std::runtime_error(std::string("SDL_CreateWindow Error: ") + SDL_GetError());
-    }
-
-    renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
-    if (!renderer) {
-        SDL_DestroyWindow(window);
-        SDL_Quit();
-        throw std::runtime_error(std::string("SDL_CreateRenderer Error: ") + SDL_GetError());
-    }
-
-    // Add buttons
-    // Add buttons at the top-left corner
-
-    //buttons.push_back({ {1030, 10, 25, 25}, "Red", [this]() { render_aircrafts("red"); }});
-    //buttons.push_back({ {1030, 40, 25, 25}, "Blue", [this]() { render_aircrafts("blue"); }});
-
-    //buttons.push_back({ {1030, 10, 25, 25}, "Red", [this]() { render_single_aircraft("red"); }});
-    //buttons.push_back({ {1030, 40, 25, 25}, "Blue", [this]() { render_single_aircraft("blue"); }});
     initialize_deploy();
-
-    buttons.push_back({ {1030, 10, 25, 25}, "Red", SimulationObjectType::Aircraft, [this]() {
-        onButtonclick("red");
-    } });
-    buttons.push_back({ {1030, 40, 25, 25}, "Blue", SimulationObjectType::Aircraft, [this]() {
-        onButtonclick("blue");
-    } });
-
-    buttons.push_back({ {1030, 70, 25, 25}, "Red", SimulationObjectType::Waypoint, [this]() {
-    onButtonclick("red-waypoint");
-    } });
-    buttons.push_back({ {1030, 100, 25, 25}, "Blue", SimulationObjectType::Waypoint, [this]() {
-        onButtonclick("blue-waypoint");
-    } });
-
-    buttons.push_back({ {1030, 550, 25, 25}, "Green", SimulationObjectType::Unknown, [this]() { initialize(); }});
-
-
-    // Aircrafts ceated
-    // render_aircrafts();
-    //add_aircraft("Fighter1", "Blue", 100, 70.0f, 60.0f, 270.0f, 0.25f, coordSystem);
-    //add_aircraft("Fighter2", "Blue", 100, 60.0f, 60.0f, 270.0f, 0.25f, coordSystem);
-    //add_aircraft("Fighter3", "Blue", 100, 50.0f, 60.0f, 270.0f, 0.25f, coordSystem);
-
-    //add_aircraft("Bomber1", "Red", 100, -60.0f, -60.0f, 90.0f, 0.25f, coordSystem);
-    //add_aircraft("Bomber2", "Red", 100, -50.0f, -60.0f, 90.0f, 0.25f, coordSystem);
-    //add_aircraft("Bomber3", "Red", 100, -40.0f, -60.0f, 90.0f, 0.25f, coordSystem);
 
     //################################ python ################################
 
@@ -76,18 +24,36 @@ Simulation::Simulation()
 }
 
 Simulation::~Simulation() {
-    if (renderer) SDL_DestroyRenderer(renderer);
-    if (window) SDL_DestroyWindow(window);
-    SDL_Quit();
+
 }
 
-std::string Simulation::simulationObjectTypeToString(SimulationObjectType type) {
-    switch (type) {
-    case SimulationObjectType::Aircraft: return "Aircraft";
-    case SimulationObjectType::Waypoint: return "Waypoint";
-    case SimulationObjectType::Missile: return "Missile";
-    default: return "Unknown";
-    }
+CoordinateSystem Simulation::getCoordinateSystem() {
+    return coordSystem;
+}
+
+void Simulation::setDeployMode(SimulationObjectType dm) {
+    deployMode = dm;
+}
+
+SimulationObjectType Simulation::getDeployMode() {
+    return deployMode;
+}
+
+std::string Simulation::getSelectedAircraft() {
+    return selectedAircraft;
+}
+
+std::string Simulation::getSelectedWaypoint() {
+    return selectedWaypoint;
+}
+
+// Check if the simulation is running
+bool Simulation::is_running() const {
+    return running;
+}
+
+void Simulation::set_running(bool state) {
+    running = state;
 }
 
 void Simulation::onButtonclick(std::string color) {
@@ -138,7 +104,7 @@ void Simulation::render_waypoint(std::string color, int x, int y) {
     }
 }
 
-void Simulation::render_single_aircraft(std::string color, int x, int y) {
+void Simulation::render_single_aircraft(std::string color, int x, int y, float angle) {
     if (color == "Red") {
         add_aircraft("Fighter - Red", "Red", 100, x, y, angle, 0.25f, coordSystem);
     }
@@ -146,42 +112,6 @@ void Simulation::render_single_aircraft(std::string color, int x, int y) {
         add_aircraft("Fighter - Blue", "Blue", 100, x, y, angle, 0.25f, coordSystem);
     }
 }
-
-void Simulation::render_aircraft_preview(const std::string& force, int x, int y) {
-    
-    SDL_Texture* aircraftTexture;
-    aircraftTexture = IMG_LoadTexture(renderer, FileLoader::getSimulationObjectTexture(SimulationObjectType::Aircraft).c_str());
-    if (aircraftTexture == nullptr) {
-        std::cerr << "Error loading aircraft texture: " << SDL_GetError() << "\n";
-        return;
-    }
-
-    int texture_width = 32, texture_height = 32;
-    SDL_QueryTexture(aircraftTexture, nullptr, nullptr, &texture_width, &texture_height);
-
-    SDL_Rect renderQuad = { x - texture_width / 2, y - texture_height / 2, texture_width, texture_height };
-
-    // Set aircraft color (based on the force)
-    if (force == "Blue") {
-        //SDL_SetTextureColorMod(aircraftTexture, 0, 0, 255); // Blue
-        SDL_SetTextureColorMod(aircraftTexture, 30, 144, 255); // Blue
-    }
-    else if (force == "Red") {
-        //SDL_SetTextureColorMod(aircraftTexture, 255, 0, 0); // Red
-        SDL_SetTextureColorMod(aircraftTexture, 220, 20, 60); // Red
-    }
-    else {
-        SDL_SetTextureColorMod(aircraftTexture, 255, 255, 255); // Default white
-    }
-
-     // Aircraft's heading (in degrees)
-
-    // Rotate the aircraft image based on its heading (rotate around its center)
-    SDL_RenderCopyEx(renderer, aircraftTexture, nullptr, &renderQuad, angle, nullptr, SDL_FLIP_NONE);
-    SDL_DestroyTexture(aircraftTexture);
-
-}
-
 
 void Simulation::render_aircrafts(std::string color) {
     int grid_size = 5; // 7x7 grid
@@ -246,213 +176,130 @@ std::vector<Aircraft>& Simulation::get_aircrafts_mutable() {
     return aircrafts;
 }
 
-// Main simulation loop
-void Simulation::run() {
-    SDL_Event e;
-    running = true; // Set running to true when the simulation starts
-
-    int mouseX = 0, mouseY = 0;
-
-    while (!quit) {
-        
-        while (SDL_PollEvent(&e)) {
-            if (e.type == SDL_QUIT) {
-                quit = true;
-            }
-            else if (e.type == SDL_MOUSEBUTTONDOWN) {
-                //handleMouseClick(e.button.x, e.button.y);
-                handleMouseEvent(e);
-            }
-            else if (e.type == SDL_MOUSEMOTION) {
-                SDL_GetMouseState(&mouseX, &mouseY);
-            }
-            else if (e.type == SDL_MOUSEWHEEL) {
-                handleMouseWheel(e);
-            }
-
-        }
-
-        // Clear the screen
-        SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
-        SDL_RenderClear(renderer);
-
-        // Render buttons
-        for (const auto& button : buttons) {
-            button.render(renderer);
-        }
-
-
-        // Render aircraft following mouse pointer in deployMode
-        if (deployMode == SimulationObjectType::Aircraft && !selectedAircraft.empty()) {
-            render_aircraft_preview(selectedAircraft, mouseX, mouseY);
-        }
-        // Simulation Update Call
-        simulation_update(renderer);
-
-        SDL_RenderPresent(renderer);
-        SDL_Delay(16);  // Cap frame rate to ~60 FPS
-    }
-    running = false; // Set running to false when the simulation stops
-}
-
-void Simulation::handleMouseEvent(const SDL_Event& e) {
-    if (e.type == SDL_MOUSEBUTTONDOWN && e.button.button == SDL_BUTTON_LEFT) {
-        int x = e.button.x;
-        int y = e.button.y;
-
-        std::cout << "Left click detected at (" << x << ", " << y << ")\n";
-
-        bool buttonClicked = false;
-
-        // Check if any button is clicked
-        for (const auto& button : buttons) {
-            if (button.isClicked(x, y)) {
-                button.onClick();
-                buttonClicked = true;  // Mark that a button was clicked
-                std::cout << "Button clicked at (" << x << ", " << y << ")\n";
-                break;  // Exit loop since a button was clicked
-            }
-        }
-
-        // If no button is clicked, check for deploying aircraft
-        if (!buttonClicked) {
-            std::cout << "Screen clicked at (" << x << ", " << y << ")\n";
-            std::cout << "Deploy mode: " << simulationObjectTypeToString(deployMode)
-                << ", Selected aircraft: " << selectedAircraft << "\n";
-
-            if (deployMode == SimulationObjectType::Aircraft && !selectedAircraft.empty()) {
-                // Deploy the selected aircraft at the mouse location
-                std::pair<int, int> lat_lon = coordSystem.to_lat_lon(x, y);
-                int lat = lat_lon.first;
-                int lon = lat_lon.second;
-                render_single_aircraft(selectedAircraft, lat, lon);
-            }
-
-            if (deployMode == SimulationObjectType::Waypoint && !selectedWaypoint.empty()) {
-                // Deploy the selected aircraft at the mouse location
-                std::pair<int, int> lat_lon = coordSystem.to_lat_lon(x, y);
-                int lat = lat_lon.first;
-                int lon = lat_lon.second;
-                render_waypoint(selectedWaypoint, lat, lon);
-            }
-        }
-
-    }
-    else {
-        // Always reset deploy mode after handling the click
-        if (deployMode != SimulationObjectType::Unknown) {
-            std::cout << "Deploy mode deactivated.\n";
-            deployMode = SimulationObjectType::Unknown;
-        }
-    }
-}
-
-
-void Simulation::handleMouseClick(int x, int y) {
-    bool buttonClicked = false;
-
-    // Check if any button is clicked
-    for (const auto& button : buttons) {
-        if (button.isClicked(x, y)) {
-            button.onClick();
-            buttonClicked = true;  // Mark that a button was clicked
-            std::cout << "Button clicked at (" << x << ", " << y << ")\n";
-            break;  // Exit loop since a button was clicked
-        }
-    }
-
-    // If no button is clicked, check for deploying aircraft
-    if (!buttonClicked) {
-        std::cout << "Screen clicked at (" << x << ", " << y << ")\n";
-        std::cout << "Deploy mode: " << simulationObjectTypeToString(deployMode)
-            << ", Selected aircraft: " << selectedAircraft << "\n";
-
-        if (deployMode == SimulationObjectType::Aircraft && !selectedAircraft.empty()) {
-            // Deploy the selected aircraft at the mouse location
-            std::pair<int, int> lat_lon = coordSystem.to_lat_lon(x, y);
-            int lat = lat_lon.first;
-            int lon = lat_lon.second;
-            render_single_aircraft(selectedAircraft, lat, lon);
-            //deployMode = false;  // Turn off deploy mode after deploying
-        }
-    }
-}
-
-void Simulation::handleMouseWheel(SDL_Event& e) {
-    if (e.type == SDL_MOUSEWHEEL) {
-        angle += e.wheel.y * 5.0f; // Adjust rotation by 5 degrees per scroll step
-    }
-}
-
-
-
-void Simulation::simulation_update(SDL_Renderer* renderer) {
+// simulation Update
+void Simulation::simulation_update() {
     for (auto& aircraft : aircrafts) {
-        aircraft.update(renderer); // Update each aircraft's state
+        aircraft.update(); // Update each aircraft's state
     }
 
     for (auto& waypoint : waypoints) {
-        waypoint.update(renderer); // Update each aircraft's state
+        waypoint.update(); // Update each aircraft's state
     }
     //initialize();
-    PyGILState_STATE gstate;
-    gstate = PyGILState_Ensure();
+    //PyGILState_STATE gstate;
+    //gstate = PyGILState_Ensure();
 
     // Perform Python actions here.
      //behavior_module.attr("sim_update")();
     // behavior_module.attr("call_once")();
 
     // Release the thread. No Python API allowed beyond this point.
-    PyGILState_Release(gstate);
+    //PyGILState_Release(gstate);
+}
+
+// Assuming necessary headers are included and Simulation, Aircraft, Waypoint classes exist
+
+void Simulation::processSimulation() {
+    // Use pointers to original waypoints
+    std::deque<Waypoint*> red_waypoints;
+    std::deque<Waypoint*> blue_waypoints;
+
+    // Iterate through original waypoints by reference
+    for (Waypoint& wp : waypoints) { // Assuming waypoints is std::vector<Waypoint>
+        if (wp.get_force() == "Red") {
+            red_waypoints.push_back(&wp);
+        }
+        else if (wp.get_force() == "Blue") {
+            blue_waypoints.push_back(&wp);
+        }
+    }
+
+    // Process each aircraft by reference to modify originals
+    for (Aircraft& aircraft : aircrafts) { // Assuming aircrafts is std::vector<Aircraft>
+        // Get current position
+        double aircraft_lat, aircraft_lon;
+        aircraft_lat = aircraft.get_position().first;
+        aircraft_lon = aircraft.get_position().second;
+
+        Waypoint* target_waypoint = nullptr;
+        std::string force = aircraft.get_force();
+
+        // Assign appropriate waypoint based on force
+        if (force == "Red") {
+            if (!red_waypoints.empty()) {
+                target_waypoint = red_waypoints.front();
+                red_waypoints.pop_front();
+            }
+            else {
+                std::cout << "No red waypoints available for aircraft "
+                    << aircraft.get_name() << std::endl;
+            }
+        }
+        else if (force == "Blue") {
+            if (!blue_waypoints.empty()) {
+                target_waypoint = blue_waypoints.front();
+                blue_waypoints.pop_front();
+            }
+            else {
+                std::cout << "No blue waypoints available for aircraft "
+                    << aircraft.get_name() << std::endl;
+            }
+        }
+
+        // Move aircraft if valid waypoint exists
+        if (target_waypoint) {
+            double target_lat, target_lon;
+            target_lat = target_waypoint->get_position().first;
+            target_lon = target_waypoint->get_position().second;
+            aircraft.move_to(target_lat, target_lon);
+
+            std::cout << "Moving Aircraft " << aircraft.get_name()
+                << " from (" << aircraft_lat << ", " << aircraft_lon
+                << ") to (" << target_lat << ", " << target_lon
+                << ") at waypoint " << target_waypoint->get_name()
+                << std::endl;
+        }
+        else {
+            std::cout << "Aircraft " << aircraft.get_name()
+                << " has no valid waypoint to move to." << std::endl;
+        }
+    }
 }
 
 void Simulation::initialize() {
-    //if (!is_initialized) {
-    /*    std::cout << "Simulation initialized!" << std::endl;
-        
-        PyGILState_STATE gstate;
-        gstate = PyGILState_Ensure();
 
-        behavior_module.attr("call_once")();
+    processSimulation();
 
-        PyGILState_Release(gstate);*/
+    //PyGILState_STATE gstate;
+    //gstate = PyGILState_Ensure();
 
-        //is_initialized = true;
+    //try {
+    //    // Call the Python function and capture the return value
+    //    pybind11::object result = behavior_module.attr("call_once")();
+
+    //    // Process the returned value (example for a dictionary)
+    //    if (pybind11::isinstance<pybind11::dict>(result)) {
+    //        pybind11::dict result_dict = result.cast<pybind11::dict>();
+    //        std::string status = pybind11::str(result_dict["status"]);
+    //        pybind11::list data = result_dict["data"].cast<pybind11::list>();
+
+    //        std::cout << "Status: " << status << "\n";
+    //        std::cout << "Data: ";
+    //        for (auto item : data) {
+    //            std::cout << item.cast<int>() << " ";
+    //        }
+    //        std::cout << "\n";
+    //    }
+    //    else {
+    //        std::cerr << "Unexpected return type from call_once\n";
+    //    }
+    //}
+    //catch (const pybind11::error_already_set& e) {
+    //    std::cerr << "Python error: " << e.what() << "\n";
     //}
 
-    PyGILState_STATE gstate;
-    gstate = PyGILState_Ensure();
-
-    try {
-        // Call the Python function and capture the return value
-        pybind11::object result = behavior_module.attr("call_once")();
-
-        // Process the returned value (example for a dictionary)
-        if (pybind11::isinstance<pybind11::dict>(result)) {
-            pybind11::dict result_dict = result.cast<pybind11::dict>();
-            std::string status = pybind11::str(result_dict["status"]);
-            pybind11::list data = result_dict["data"].cast<pybind11::list>();
-
-            std::cout << "Status: " << status << "\n";
-            std::cout << "Data: ";
-            for (auto item : data) {
-                std::cout << item.cast<int>() << " ";
-            }
-            std::cout << "\n";
-        }
-        else {
-            std::cerr << "Unexpected return type from call_once\n";
-        }
-    }
-    catch (const pybind11::error_already_set& e) {
-        std::cerr << "Python error: " << e.what() << "\n";
-    }
-
-    PyGILState_Release(gstate);
+    //PyGILState_Release(gstate);
 
 }
 
-// Check if the simulation is running
-bool Simulation::is_running() const {
-    return running;
-}
+

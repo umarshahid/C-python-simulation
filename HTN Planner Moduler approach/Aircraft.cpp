@@ -4,6 +4,7 @@
 #include "CoordinateSystem.h"
 #include "FileLoader.cpp"
 #include "Simulation.h"
+#include "RenderManager.h"
 
 
 // Constructor
@@ -18,8 +19,6 @@ Aircraft::Aircraft(const std::string& name, const std::string& force, int health
     else {
         this->force = force;
     }
-
-    iconPath = FileLoader::getSimulationObjectTexture(SimulationObjectType::Aircraft);
     radar = Radar(150, 45.0f);
 }
 
@@ -66,6 +65,10 @@ void Aircraft::set_heading(float new_heading) {
 
 std::pair<int, int> Aircraft::get_position_xy() const {
     return coordinateSystem.to_screen_coordinates(latitude, longitude);
+}
+
+std::pair<int, int> Aircraft::get_target_position_xy() const {
+    return coordinateSystem.to_screen_coordinates(target_latitude, target_longitude);
 }
 
 void Aircraft::move_to(float newLatitude, float newLongitude) {
@@ -117,7 +120,6 @@ void Aircraft::move(float distance) {
     coordinateSystem.wrap_coordinates(latitude, longitude);
 }
 
-// Attack another aircraft
 void Aircraft::attack(Aircraft& target) {
     if (!is_alive()) {
         std::cout << name << " cannot attack because it is destroyed.\n";
@@ -132,7 +134,6 @@ void Aircraft::attack(Aircraft& target) {
     std::cout << name << " attacked " << target.get_name() << "!\n";
 }
 
-// Defend and restore health
 void Aircraft::defend() {
     if (!is_alive()) {
         std::cout << name << " cannot defend because it is destroyed.\n";
@@ -143,54 +144,8 @@ void Aircraft::defend() {
     std::cout << name << " is defending and restored health to " << health << ".\n";
 }
 
-// Check if the aircraft is still alive
 bool Aircraft::is_alive() const {
     return health > 0;
-}
-
-
-void Aircraft::draw(SDL_Renderer* renderer) const {
-    
-    // Get screen coordinates of the aircraft
-    std::pair<int, int> screen_coordinates = coordinateSystem.to_screen_coordinates(latitude, longitude);
-    int screen_x = screen_coordinates.first;
-    int screen_y = screen_coordinates.second;
-
-    radar.drawRadarCone(renderer, screen_x, screen_y, get_heading()-90);
-
-    SDL_Texture* aircraftTexture = loadTexture(renderer, iconPath);
-    if (!aircraftTexture) return;
-
-
-    // Calculate the render rectangle for the image
-    // Get the dimensions of the aircraft texture
-    int texture_width = 32, texture_height=32;
-    SDL_QueryTexture(aircraftTexture, nullptr, nullptr, &texture_width, &texture_height);
-
-    // Calculate the position for the aircraft image (centered around the coordinates)
-    SDL_Rect renderQuad = { screen_x - texture_width / 2, screen_y - texture_height / 2, texture_width, texture_height };
-
-    // Set aircraft color (based on the force)
-    applyColorMod(aircraftTexture);
-
-    // Calculate the angle in radians and ensure it's correct
-    float angle = get_heading(); // Aircraft's heading (in degrees)
-
-    // Rotate the aircraft image based on its heading (rotate around its center)
-    SDL_RenderCopyEx(renderer, aircraftTexture, nullptr, &renderQuad, angle, nullptr, SDL_FLIP_NONE);
-
-    // Free the texture after rendering
-    SDL_DestroyTexture(aircraftTexture);
-
-    if (is_moving) {
-        std::pair<int, int> target_coordinates = coordinateSystem.to_screen_coordinates(target_latitude, target_longitude);
-        int target_x = target_coordinates.first;
-        int target_y = target_coordinates.second;
-
-        SDL_SetRenderDrawColor(renderer, 0, 255, 0, 255);  // Green for target line
-        SDL_RenderDrawLine(renderer, screen_x, screen_y, target_x, target_y);
-    }
-
 }
 
 void Aircraft::perform_radar_scan() {
@@ -213,7 +168,7 @@ void Aircraft::perform_radar_scan() {
     }
 }
 
-void Aircraft::update(SDL_Renderer* renderer) {
+void Aircraft::update() {
     if (!is_alive()) {
         std::cout << name << " is destroyed and cannot perform updates.\n";
         return;
@@ -221,7 +176,7 @@ void Aircraft::update(SDL_Renderer* renderer) {
 
     // Update the position if the aircraft is moving
     update_position();
-    draw(renderer);
+	RenderManager::get_instance().drawAircraft(this);
 
     auto currentTime = std::chrono::high_resolution_clock::now();
     std::chrono::duration<float> delta = currentTime - lastTime;
@@ -237,30 +192,5 @@ void Aircraft::update(SDL_Renderer* renderer) {
         perform_radar_scan();
         // #### Radar scane
         elapsedTime = 0.0f;
-    }
-}
-
-
-
-SDL_Texture* Aircraft::loadTexture(SDL_Renderer* renderer, const std::string& path) {
-    SDL_Texture* texture = IMG_LoadTexture(renderer, path.c_str());
-    if (!texture) {
-        std::cerr << "Error loading texture (" << path << "): " << SDL_GetError() << "\n";
-    }
-    return texture;
-}
-
-void Aircraft::applyColorMod(SDL_Texture* texture) const {
-    if (force == "Blue") {
-        SDL_SetTextureColorMod(texture, 30, 144, 255); // Blue
-    }
-    else if (force == "Red") {
-        SDL_SetTextureColorMod(texture, 220, 20, 60);  // Red
-    }
-    else if (force == "Green") {
-        SDL_SetTextureColorMod(texture, 80, 200, 120); // Green
-    }
-    else {
-        SDL_SetTextureColorMod(texture, 255, 255, 255);
     }
 }

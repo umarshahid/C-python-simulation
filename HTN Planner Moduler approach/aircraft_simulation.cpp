@@ -25,8 +25,8 @@ PYBIND11_MODULE(aircraft_simulation, m) {
     py::class_<Simulation>(m, "Simulation")
         .def("add_aircraft", &Simulation::add_aircraft)
         .def("get_aircrafts", &Simulation::get_aircrafts, py::return_value_policy::reference_internal)
-        .def("get_waypoints", &Simulation::get_waypoints, py::return_value_policy::reference_internal)
-        .def("is_quit", &Simulation::is_quit);
+        .def("get_waypoints", &Simulation::get_waypoints, py::return_value_policy::reference_internal);
+        //.def("is_quit", &Simulation::is_quit);
 
     m.def("get_simulation_instance", []() -> Simulation& {
         return Simulation::get_instance();  // Return a reference to avoid re-initializing

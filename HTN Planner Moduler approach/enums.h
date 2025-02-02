@@ -1,4 +1,6 @@
 #pragma once
+#include <string>
+
 
 enum class SimulationObjectType { 
 	Aircraft, 
@@ -6,3 +8,4 @@ enum class SimulationObjectType {
 	Missile, 
 	Unknown 
 };
+

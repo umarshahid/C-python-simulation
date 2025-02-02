@@ -74,7 +74,7 @@
     <LibraryPath>D:\Cplusplus\HTN Planner Moduler approach\HTN Planner Moduler approach\SDL\SDL2-2.30.10\lib\x64;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <LibraryPath>D:\Cplusplus\Aircraft-Simulation\HTN Planner Moduler approach\SDL\SDL2-2.30.10\lib\x64;C:\Users\umar.shahid\AppData\Local\Programs\Python\Python312\libs;D:\Cplusplus\Aircraft-Simulation\HTN Planner Moduler approach\SDL\SDL2_image-2.8.4\lib\x64;$(LibraryPath)</LibraryPath>
+    <LibraryPath>C:\Users\umar\source\repos\C-python-simulation\HTN Planner Moduler approach\SDL\SDL2-2.30.10\lib;C:\Users\umar\AppData\Local\Programs\Python\Python313\libs;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -127,7 +127,7 @@ SDL2main.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>D:\Cplusplus\Aircraft-Simulation\HTN Planner Moduler approach\SDL\SDL2-2.30.10\include;C:\Users\umar.shahid\AppData\Local\Programs\Python\Python312\include;C:\Users\umar.shahid\AppData\Local\Programs\Python\Python312\Lib\site-packages\pybind11\include;D:\Cplusplus\Aircraft-Simulation\3rd-party\vcpkg\installed\x64-windows\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Users\umar\source\repos\C-python-simulation\HTN Planner Moduler approach\SDL\SDL2-2.30.10\include;C:\Users\umar\AppData\Local\Programs\Python\Python312\include;C:\Users\umar\AppData\Local\Programs\Python\Python312\Lib\site-packages\pybind11\include;C:\Users\umar\source\repos\C-python-simulation\3rd-party\vcpkg\installed\x64-windows\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -135,7 +135,7 @@ SDL2main.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalDependencies>"SDL2.lib";"SDL2main.lib";"SDL2_image.lib";%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>D:\Cplusplus\Aircraft-Simulation\HTN Planner Moduler approach\SDL\SDL2-2.30.10\lib\x64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>C:\Users\umar\source\repos\C-python-simulation\HTN Planner Moduler approach\SDL\SDL2-2.30.10\lib\x64;C:\Users\umar\AppData\Local\Programs\Python\Python312\libs;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
@@ -148,8 +148,10 @@ SDL2main.lib;%(AdditionalDependencies)</AdditionalDependencies>
     <ClCompile Include="HTNCore.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Radar.cpp" />
+    <ClCompile Include="RenderManager.cpp" />
     <ClCompile Include="Simulation.cpp" />
     <ClCompile Include="SimulationObject.cpp" />
+    <ClCompile Include="utils.cpp" />
     <ClCompile Include="Waypoint.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -158,6 +160,7 @@ SDL2main.lib;%(AdditionalDependencies)</AdditionalDependencies>
     <ClInclude Include="CoordinateSystem.h" />
     <ClInclude Include="HTNCore.h" />
     <ClInclude Include="Radar.h" />
+    <ClInclude Include="RenderManager.h" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="Simulation.h" />
     <ClInclude Include="SimulationObject.h" />

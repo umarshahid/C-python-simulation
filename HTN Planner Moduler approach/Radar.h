@@ -26,10 +26,10 @@ public:
     Radar(Radar&&) noexcept = default;
     Radar& operator=(Radar&&) noexcept = default;
 
-	void drawRadarCone(SDL_Renderer* renderer, int x, int y, float radius, float orientation, float angle, SDL_Color color);
-	void drawRadarCone(SDL_Renderer* renderer, int centerX, int centerY, float heading) const;
-	//std::vector<Aircraft&> getEntitiesInRadarCone(std::vector<Aircraft>& entities, int centerX, int centerY, float heading);
     std::vector<std::reference_wrapper<Aircraft>> getEntitiesInRadarCone(std::vector<Aircraft>& entities, int centerX, int centerY, float heading);
     float normalizeAngle(float angle);
+
+	inline int getRadarRadius() const { return radarRadius; }
+	inline float getRadarAngle() const { return radarAngle; }
 };
 
