@@ -27,6 +27,11 @@ Here is a screenshot of the simulation's render screen:
 #### Screenshot SIM UI
 <img src="./assets/images/Aircraft_Radars.png" alt="Render Screen" style="width:100%; max-width:900px; height:auto;">
 
+<video width="600" controls>
+  <source src="video.mp4" type="video/mp4">
+  Your browser does not support the video tag.
+</video>
+
 ## Setup
 
 ### Prerequisites & Installing Dependencies

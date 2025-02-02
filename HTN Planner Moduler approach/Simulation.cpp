@@ -106,10 +106,12 @@ void Simulation::render_waypoint(std::string color, int x, int y) {
 
 void Simulation::render_single_aircraft(std::string color, int x, int y, float angle) {
     if (color == "Red") {
-        add_aircraft("Fighter - Red", "Red", 100, x, y, angle, 0.25f, coordSystem);
+        add_aircraft("Fighter - Red", "Red", 100, x, y, angle, 0.10f, coordSystem);
+        //add_aircraft("Fighter - Red", "Red", 100, x, y, angle, 0.25f, coordSystem);
     }
     else if (color == "Blue") {
-        add_aircraft("Fighter - Blue", "Blue", 100, x, y, angle, 0.25f, coordSystem);
+        add_aircraft("Fighter - Blue", "Blue", 100, x, y, angle, 0.10f, coordSystem);
+        //add_aircraft("Fighter - Blue", "Blue", 100, x, y, angle, 0.25f, coordSystem);
     }
 }
 
