@@ -22,13 +22,14 @@ This project simulates the behavior of aircraft in a 2D space, utilizing SDL for
 
 ## Screenshot
 
-Here is a screenshot of the simulation's render screen:
+Here is a short video of the simulation's render screen:
 
-#### Screenshot SIM UI
-<img src="./assets/images/Aircraft_Radars.png" alt="Render Screen" style="width:100%; max-width:900px; height:auto;">
+<!-- #### Screenshot
+<img src="./assets/images/Aircraft_Radars.png" alt="Render Screen" style="width:100%; max-width:900px; height:auto;"> -->
 
+#### UI Visualization
 <video width="600" controls>
-  <source src="video.mp4" type="video/mp4">
+  <source src="./assets/video/Visualization.mp4" type="video/mp4">
   Your browser does not support the video tag.
 </video>
 
