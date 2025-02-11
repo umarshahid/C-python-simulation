@@ -39,6 +39,8 @@ public:
             return reader.Get("OBJECT_ICONS", "aircraft", "default_value");
         case SimulationObjectType::Waypoint:
             return reader.Get("OBJECT_ICONS", "waypoint", "default_value");
+        case SimulationObjectType::Missile:
+            return reader.Get("OBJECT_ICONS", "missile", "default_value");
         case SimulationObjectType::Unknown:
         default:
             return reader.Get("OBJECT_ICONS", "plan", "default_value");

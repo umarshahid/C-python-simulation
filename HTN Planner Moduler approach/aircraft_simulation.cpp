@@ -24,7 +24,14 @@ PYBIND11_MODULE(aircraft_simulation, m) {
 
     py::class_<Simulation>(m, "Simulation")
         .def("add_aircraft", &Simulation::add_aircraft)
-        .def("get_aircrafts", &Simulation::get_aircrafts, py::return_value_policy::reference_internal)
+        //.def("get_aircrafts", &Simulation::get_aircrafts, py::return_value_policy::reference_internal)
+        .def("get_aircrafts", [](Simulation& self) {
+        std::vector<Aircraft*> aircrafts_raw;
+        for (auto& aircraft : self.get_aircrafts()) {
+            aircrafts_raw.push_back(aircraft.get());  // Convert unique_ptr to raw pointer
+        }
+        return aircrafts_raw;
+        }, py::return_value_policy::reference_internal)
         .def("get_waypoints", &Simulation::get_waypoints, py::return_value_policy::reference_internal);
         //.def("is_quit", &Simulation::is_quit);
 

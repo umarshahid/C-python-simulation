@@ -28,11 +28,15 @@ public:
 
     static Simulation& get_instance();
 
+    double _dt = 0.016; // 50ms time step
+
     void render_aircrafts(std::string color);
     void add_aircraft(const std::string& name, const std::string& force, int health, float x, float y, float heading, float speed, CoordinateSystem& coordSystem);
-    const std::vector<Aircraft>& get_aircrafts() const;
+    const std::vector<std::unique_ptr<Aircraft>>& get_aircrafts() const;
     const std::vector<Waypoint>& get_waypoints() const;
-    std::vector<Aircraft>& get_aircrafts_mutable();
+    //std::vector<Aircraft*>& get_aircrafts_mutable();
+	std::vector<std::unique_ptr<Aircraft>>& get_aircrafts_mutable();
+
     bool is_running() const;
     void set_running(bool state);
     ~Simulation();
@@ -51,6 +55,7 @@ public:
     CoordinateSystem getCoordinateSystem();
     std::string getSelectedAircraft();
     std::string getSelectedWaypoint();
+    void remove_aircraft(Aircraft* target);
 
 private:
     Simulation();
@@ -58,7 +63,8 @@ private:
     std::string selectedAircraft;
     std::string selectedWaypoint;
 
-    std::vector<Aircraft> aircrafts;
+    //std::vector<Aircraft*> aircrafts;
+    std::vector<std::unique_ptr<Aircraft>> aircrafts;
     std::vector<Waypoint> waypoints;
 
 

@@ -15,6 +15,7 @@ RenderManager::RenderManager() : window(nullptr), renderer(nullptr), quit(false)
 
     iconPathAircraft = FileLoader::getSimulationObjectTexture(SimulationObjectType::Aircraft);
     iconPathWaypoint = FileLoader::getSimulationObjectTexture(SimulationObjectType::Waypoint);
+    iconPathMissile = FileLoader::getSimulationObjectTexture(SimulationObjectType::Missile); 
 
     if (SDL_Init(SDL_INIT_VIDEO) != 0) {
         throw std::runtime_error(std::string("SDL_Init Error: ") + SDL_GetError());
@@ -83,7 +84,11 @@ void RenderManager::run() {
         }
 
         // Clear the screen
-        SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
+        SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255); //black
+        //SDL_SetRenderDrawColor(renderer, 54, 69, 79, 255); //Charcol
+        //SDL_SetRenderDrawColor(renderer, 64, 64, 64, 255); //gray
+        //SDL_SetRenderDrawColor(renderer, 55, 55, 55, 255); //shadow
+        //SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255); //white
         SDL_RenderClear(renderer);
 
         // Render buttons
@@ -215,9 +220,8 @@ void RenderManager::render_aircraft_preview(const std::string& force, int x, int
 // ******************* Aircraft Drawing *******************
 void RenderManager::drawAircraft(Aircraft* aircraft) const {
 
-    // Get screen coordinates of the aircraft
-    int screen_x = aircraft->get_position_xy().first;
-    int screen_y = aircraft->get_position_xy().second;
+    int screen_x = aircraft->get_position3().x;
+    int screen_y = aircraft->get_position3().y;
 
     drawRadarCone(aircraft->getRadar(), screen_x, screen_y, aircraft->get_heading() - 90);
 
@@ -233,7 +237,6 @@ void RenderManager::drawAircraft(Aircraft* aircraft) const {
     SDL_Rect renderQuad = { screen_x - texture_width / 2, screen_y - texture_height / 2, texture_width, texture_height };
 
     // Set aircraft color (based on the force)
-    
     applyColorMod(aircraftTexture, aircraft->get_force());
 
     // Rotate the aircraft image based on its heading (rotate around its center)
@@ -278,30 +281,7 @@ void RenderManager::drawWaypoint(Waypoint* waypoint) const {
 
 }
 
-// common for all render manager
 
-SDL_Texture* RenderManager::loadTexture(SDL_Renderer* renderer, const std::string& path) {
-    SDL_Texture* texture = IMG_LoadTexture(renderer, path.c_str());
-    if (!texture) {
-        std::cerr << "Error loading texture (" << path << "): " << SDL_GetError() << "\n";
-    }
-    return texture;
-}
-
-void RenderManager::applyColorMod(SDL_Texture* texture, std::string force) const {
-    if (force == "Blue") {
-        SDL_SetTextureColorMod(texture, 30, 144, 255); // Blue
-    }
-    else if (force == "Red") {
-        SDL_SetTextureColorMod(texture, 220, 20, 60);  // Red
-    }
-    else if (force == "Green") {
-        SDL_SetTextureColorMod(texture, 80, 200, 120); // Green
-    }
-    else {
-        SDL_SetTextureColorMod(texture, 255, 255, 255);
-    }
-}
 
 void RenderManager::drawRadarCone(Radar* radar, int centerX, int centerY, float heading) const {
 
@@ -334,5 +314,98 @@ void RenderManager::drawRadarCone(Radar* radar, int centerX, int centerY, float 
         int arcX2 = centerX + radar->getRadarRadius() * cos(t2);
         int arcY2 = centerY + radar->getRadarRadius() * sin(t2);
         SDL_RenderDrawLine(renderer, arcX1, arcY1, arcX2, arcY2);
+    }
+}
+
+SDL_Surface* RenderManager::ResizeSurface(SDL_Surface* source, int newWidth, int newHeight) {
+    SDL_Surface* resized = SDL_CreateRGBSurface(0, newWidth, newHeight, 32,
+        source->format->Rmask, source->format->Gmask, source->format->Bmask, source->format->Amask);
+
+    if (!resized) {
+        std::cerr << "Failed to create surface: " << SDL_GetError() << std::endl;
+        return nullptr;
+    }
+
+    SDL_Rect srcRect = { 0, 0, source->w, source->h };
+    SDL_Rect dstRect = { 0, 0, newWidth, newHeight };
+
+    SDL_BlitScaled(source, &srcRect, resized, &dstRect);
+    return resized;
+}
+
+void RenderManager::drawMissile(Missile* missile) const {
+
+    int screen_x = missile->get_position3().x;
+    int screen_y = missile->get_position3().y;
+
+    SDL_Texture* missileTexture = loadTexture(renderer, iconPathMissile);
+    if (!missileTexture) return;
+
+    // Calculate the render rectangle for the image
+    // Get the dimensions of the aircraft texture
+    int texture_width = 32, texture_height = 32;
+    SDL_QueryTexture(missileTexture, nullptr, nullptr, &texture_width, &texture_height);
+
+    // Calculate the position for the aircraft image (centered around the coordinates)
+    SDL_Rect renderQuad = { screen_x - texture_width / 2, screen_y - texture_height / 2, texture_width, texture_height };
+
+    // Set aircraft color (based on the force)
+    applyColorMod(missileTexture, missile->force);
+
+    // Rotate the aircraft image based on its heading (rotate around its center)
+    SDL_RenderCopyEx(renderer, missileTexture, nullptr, &renderQuad, missile->get_heading(), nullptr, SDL_FLIP_NONE);
+
+    // Free the texture after rendering
+    SDL_DestroyTexture(missileTexture);
+
+    if (missile->active) {
+
+        int target_x = missile->_targetPos.x;
+        int target_y = missile->_targetPos.y;
+
+        //SDL_SetRenderDrawColor(renderer, 0, 255, 0, 255);  // Green for target line
+        applyLineColor(missile->force);
+        SDL_RenderDrawLine(renderer, screen_x, screen_y, target_x, target_y);
+    }
+
+}
+
+// common for all render manager
+
+SDL_Texture* RenderManager::loadTexture(SDL_Renderer* renderer, const std::string& path) {
+    SDL_Texture* texture = IMG_LoadTexture(renderer, path.c_str());
+    if (!texture) {
+        std::cerr << "Error loading texture (" << path << "): " << SDL_GetError() << "\n";
+    }
+    return texture;
+}
+
+void RenderManager::applyColorMod(SDL_Texture* texture, std::string force) const {
+    if (force == "Blue") {
+        SDL_SetTextureColorMod(texture, 30, 144, 255); // Blue
+    }
+    else if (force == "Red") {
+        SDL_SetTextureColorMod(texture, 220, 20, 60);  // Red
+    }
+    else if (force == "Green") {
+        SDL_SetTextureColorMod(texture, 80, 200, 120); // Green
+    }
+    else {
+        SDL_SetTextureColorMod(texture, 255, 255, 255);
+    }
+}
+
+void RenderManager::applyLineColor(std::string force) const {
+    if (force == "Blue") {
+        SDL_SetRenderDrawColor(renderer, 30, 144, 255, 255); // Blue
+    }
+    else if (force == "Red") {
+        SDL_SetRenderDrawColor(renderer, 220, 20, 60, 255);  // Red
+    }
+    else if (force == "Green") {
+        SDL_SetRenderDrawColor(renderer, 80, 200, 120, 255); // Green
+    }
+    else {
+        SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
     }
 }

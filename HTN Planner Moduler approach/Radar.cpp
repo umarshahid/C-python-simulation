@@ -11,7 +11,7 @@ Radar::Radar(int radius, float angle) : radarRadius(radius), radarAngle(angle) {
 }
 
 
-std::vector<std::reference_wrapper<Aircraft>> Radar::getEntitiesInRadarCone(std::vector<Aircraft>& entities, int centerX, int centerY, float heading) {
+std::vector<std::reference_wrapper<Aircraft>> Radar::getEntitiesInRadarCone(std::vector<std::unique_ptr<Aircraft>>& entities, int centerX, int centerY, float heading) {
     std::vector<std::reference_wrapper<Aircraft>> entitiesInCone;
 
     // Convert heading and angles to radians
@@ -21,7 +21,7 @@ std::vector<std::reference_wrapper<Aircraft>> Radar::getEntitiesInRadarCone(std:
 
     for (auto& entity : entities) {
         // Calculate the vector from radar center to the entity
-        std::pair<int, int> screen_coordinates = entity.get_position_xy();
+        std::pair<int, int> screen_coordinates = entity->get_position_xy();
         int dx = screen_coordinates.first - centerX;
         int dy = screen_coordinates.second - centerY;
 
@@ -48,7 +48,7 @@ std::vector<std::reference_wrapper<Aircraft>> Radar::getEntitiesInRadarCone(std:
         }
 
         if (isInCone) {
-            entitiesInCone.push_back(entity);
+            entitiesInCone.push_back(*entity);
         }
     }
 
@@ -61,4 +61,8 @@ float Radar::normalizeAngle(float angle) {
     while (angle < 0) angle += 2 * M_PI;
     while (angle >= 2 * M_PI) angle -= 2 * M_PI;
     return angle;
+}
+
+
+void Radar::update() {
 }

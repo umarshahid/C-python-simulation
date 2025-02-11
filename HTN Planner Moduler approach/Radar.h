@@ -5,6 +5,8 @@
 #include <vector>
 #include <string>
 #include <cmath>
+#include <memory>
+
 
 class Aircraft;
 
@@ -26,10 +28,11 @@ public:
     Radar(Radar&&) noexcept = default;
     Radar& operator=(Radar&&) noexcept = default;
 
-    std::vector<std::reference_wrapper<Aircraft>> getEntitiesInRadarCone(std::vector<Aircraft>& entities, int centerX, int centerY, float heading);
+    std::vector<std::reference_wrapper<Aircraft>> getEntitiesInRadarCone(std::vector<std::unique_ptr<Aircraft>>& entities, int centerX, int centerY, float heading);
     float normalizeAngle(float angle);
 
 	inline int getRadarRadius() const { return radarRadius; }
 	inline float getRadarAngle() const { return radarAngle; }
+    void update();
 };
 

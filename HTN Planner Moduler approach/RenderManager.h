@@ -19,6 +19,7 @@ class RenderManager
 
 	std::string iconPathAircraft;
 	std::string iconPathWaypoint;
+	std::string iconPathMissile;
 
 
 	SDL_Window* window;
@@ -41,5 +42,8 @@ public:
 	void drawAircraft(Aircraft* aircraft) const;
 	void drawWaypoint(Waypoint* waypoint) const;
 	void drawRadarCone(Radar* radar, int centerX, int centerY, float heading) const;
+	void drawMissile(Missile* aircraft) const;
+	SDL_Surface* ResizeSurface(SDL_Surface* source, int newWidth, int newHeight);
+	void applyLineColor(std::string force) const;
 };
 

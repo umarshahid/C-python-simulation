@@ -156,7 +156,8 @@ void Simulation::render_aircrafts(std::string color) {
 // Add an aircraft
 void Simulation::add_aircraft(const std::string& name, const std::string& force, int health, float x, float y, float heading, float speed, CoordinateSystem& coordSystem) {
     // Create an aircraft
-    aircrafts.emplace_back(name, force, health, x, y, heading, speed, coordSystem);
+    //aircrafts.emplace_back(name, force, health, x, y, heading, speed, coordSystem);
+    aircrafts.emplace_back(std::make_unique<Aircraft>(name, force, health, x, y, heading, speed, coordSystem));
 }
 
 void Simulation::add_waypoint(const std::string& name, const std::string& force, float x, float y, CoordinateSystem& coordSystem) {
@@ -165,7 +166,7 @@ void Simulation::add_waypoint(const std::string& name, const std::string& force,
 }
 
 // Get aircrafts (const version)
-const std::vector<Aircraft>& Simulation::get_aircrafts() const {
+const std::vector<std::unique_ptr<Aircraft>>& Simulation::get_aircrafts() const {
     return aircrafts;
 }
 
@@ -173,15 +174,27 @@ const std::vector<Waypoint>& Simulation::get_waypoints() const {
     return waypoints;
 }
 
-// Get aircrafts (modifiable version)
-std::vector<Aircraft>& Simulation::get_aircrafts_mutable() {
+//// Get aircrafts (modifiable version)
+//std::vector<Aircraft*>& Simulation::get_aircrafts_mutable() {
+//    std::vector<Aircraft*> rawPointers;
+//    for (auto& aircraft : aircrafts) {
+//        rawPointers.push_back(&aircraft.get());  // Convert unique_ptr to raw pointer
+//    }
+//    return rawPointers;
+//    //return aircrafts;
+//}
+
+std::vector<std::unique_ptr<Aircraft>>& Simulation::get_aircrafts_mutable() {
     return aircrafts;
 }
 
 // simulation Update
 void Simulation::simulation_update() {
     for (auto& aircraft : aircrafts) {
-        aircraft.update(); // Update each aircraft's state
+		if (aircraft) {
+			aircraft->update(_dt); // Update each aircraft's state
+		}
+        //aircraft->update(_dt); // Update each aircraft's state
     }
 
     for (auto& waypoint : waypoints) {
@@ -217,14 +230,14 @@ void Simulation::processSimulation() {
     }
 
     // Process each aircraft by reference to modify originals
-    for (Aircraft& aircraft : aircrafts) { // Assuming aircrafts is std::vector<Aircraft>
+    for (const auto& aircraft : aircrafts) { // Assuming aircrafts is std::vector<Aircraft>
         // Get current position
         double aircraft_lat, aircraft_lon;
-        aircraft_lat = aircraft.get_position().first;
-        aircraft_lon = aircraft.get_position().second;
+        aircraft_lat = aircraft->get_position().first;
+        aircraft_lon = aircraft->get_position().second;
 
         Waypoint* target_waypoint = nullptr;
-        std::string force = aircraft.get_force();
+        std::string force = aircraft->get_force();
 
         // Assign appropriate waypoint based on force
         if (force == "Red") {
@@ -234,7 +247,7 @@ void Simulation::processSimulation() {
             }
             else {
                 std::cout << "No red waypoints available for aircraft "
-                    << aircraft.get_name() << std::endl;
+                    << aircraft->get_name() << std::endl;
             }
         }
         else if (force == "Blue") {
@@ -244,7 +257,7 @@ void Simulation::processSimulation() {
             }
             else {
                 std::cout << "No blue waypoints available for aircraft "
-                    << aircraft.get_name() << std::endl;
+                    << aircraft->get_name() << std::endl;
             }
         }
 
@@ -253,18 +266,20 @@ void Simulation::processSimulation() {
             double target_lat, target_lon;
             target_lat = target_waypoint->get_position().first;
             target_lon = target_waypoint->get_position().second;
-            aircraft.move_to(target_lat, target_lon);
+            aircraft->move_to(target_lat, target_lon);
 
-            std::cout << "Moving Aircraft " << aircraft.get_name()
+            std::cout << "Moving Aircraft " << aircraft->get_name()
                 << " from (" << aircraft_lat << ", " << aircraft_lon
                 << ") to (" << target_lat << ", " << target_lon
                 << ") at waypoint " << target_waypoint->get_name()
                 << std::endl;
         }
         else {
-            std::cout << "Aircraft " << aircraft.get_name()
+            std::cout << "Aircraft " << aircraft->get_name()
                 << " has no valid waypoint to move to." << std::endl;
         }
+        //aircraft.launch_missile();  // Launch the missile (when the condition is right)
+
     }
 }
 
@@ -302,6 +317,14 @@ void Simulation::initialize() {
 
     //PyGILState_Release(gstate);
 
+}
+
+void Simulation::remove_aircraft(Aircraft* target) {
+    aircrafts.erase(
+        std::remove_if(aircrafts.begin(), aircrafts.end(),
+            [&](const std::unique_ptr<Aircraft>& a) { return a.get() == target; }),
+        aircrafts.end()
+    );
 }
 
 
