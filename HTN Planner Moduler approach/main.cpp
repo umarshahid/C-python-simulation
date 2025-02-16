@@ -1,10 +1,11 @@
-
+#define SDL_MAIN_HANDLED
+#include <SDL.h>
 #include "RenderManager.h"
 #include <iostream>
 
 int Aircraft::nextID = 1;
 
-int SDL_main(int argc, char* argv[]) {
+int main(int argc, char* argv[]) {
     try {
         RenderManager& renderManager = RenderManager::get_instance();
 		renderManager.run();

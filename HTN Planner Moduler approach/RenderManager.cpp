@@ -256,6 +256,11 @@ void RenderManager::drawAircraft(Aircraft* aircraft) const {
 
 }
 
+void RenderManager::lockLine(Vector3* target, Vector3* self, std::string force) {
+    applyLineColor(force);
+	SDL_RenderDrawLine(renderer, self->x, self->y, target->x, target->y);
+}
+
 // ******************* Waypoint Drawing *******************
 void RenderManager::drawWaypoint(Waypoint* waypoint) const {
 

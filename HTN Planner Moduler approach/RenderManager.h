@@ -45,5 +45,6 @@ public:
 	void drawMissile(Missile* aircraft) const;
 	SDL_Surface* ResizeSurface(SDL_Surface* source, int newWidth, int newHeight);
 	void applyLineColor(std::string force) const;
+	void lockLine(Vector3* target, Vector3* self, std::string force);
 };
 

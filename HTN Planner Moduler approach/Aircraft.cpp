@@ -223,10 +223,10 @@ void Aircraft::update(double dt) {
     elapsedTime += deltaTime;
     if (elapsedTime >= 1.0f) {
         // #### Radar scane
-        perform_radar_scan();
         // #### Radar scane
         elapsedTime = 0.0f;
     }
+        perform_radar_scan();
 }
 
 void Aircraft::launch_missile() {
@@ -264,7 +264,7 @@ void Aircraft::perform_radar_scan() {
     std::vector<std::reference_wrapper<Aircraft>> detectedEntities =
         radar.getEntitiesInRadarCone(allAircrafts, screen_x, screen_y, get_heading() - 90);
 
-    static std::unordered_set<int> engagedTargets; // Keeps track of already targeted entities
+    std::unordered_set<int> engagedTargets; // Keeps track of already targeted entities
 
     for (const auto& entity : detectedEntities) {
         if (&entity.get() == this) // Skip self-detection
@@ -274,8 +274,10 @@ void Aircraft::perform_radar_scan() {
 
         if (engagedTargets.find(target_id) == engagedTargets.end()) {
             // Target not engaged before, launch missile
-            std::cout << "[" << get_name() << " - " << get_id() << "]'s radar detected: ["
-                << entity.get().get_name() << " - " << target_id << "]\n";
+            //std::cout << "[" << get_name() << " - " << get_id() << "]'s radar detected: ["
+            //    << entity.get().get_name() << " - " << target_id << "]\n";
+
+            RenderManager::get_instance().lockLine(&entity.get().position, &position, force);
 
             // Set the current target position and velocity
             current_target = &entity.get();
