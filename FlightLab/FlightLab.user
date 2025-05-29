@@ -1,0 +1,10 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="Current" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <LocalDebuggerEnvironment>PYTHONHOME=D:\repos\FlightLab\3rd-party\vcpkg\installed\x64-windows\tools\python3
+PYTHONPATH=D:\repos\FlightLab\3rd-party\vcpkg\installed\x64-windows\tools\python3\Lib;
+D:\repos\FlightLab\3rd-party\vcpkg\installed\x64-windows\tools\python3\DLLs
+$(LocalDebuggerEnvironment)</LocalDebuggerEnvironment>
+    <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
+  </PropertyGroup>
+</Project>

@@ -1,0 +1,32 @@
+﻿  Aircraft.cpp
+D:\repos\AircraftSimulation\AircraftSimulation\FileLoader.cpp(2,10): error C1083: Cannot open include file: 'INIReader.h': No such file or directory
+  (compiling source file 'Aircraft.cpp')
+  
+  aircraft_simulation.cpp
+D:\repos\AircraftSimulation\AircraftSimulation\Button.h(2,10): error C1083: Cannot open include file: 'SDL2/SDL.h': No such file or directory
+  (compiling source file 'aircraft_simulation.cpp')
+  
+  FileLoader.cpp
+D:\repos\AircraftSimulation\AircraftSimulation\FileLoader.cpp(2,10): error C1083: Cannot open include file: 'INIReader.h': No such file or directory
+  main.cpp
+D:\repos\AircraftSimulation\AircraftSimulation\RenderManager.h(2,10): error C1083: Cannot open include file: 'SDL2/SDL_image.h': No such file or directory
+  (compiling source file 'main.cpp')
+  
+  Missile.cpp
+D:\repos\AircraftSimulation\AircraftSimulation\RenderManager.h(2,10): error C1083: Cannot open include file: 'SDL2/SDL_image.h': No such file or directory
+  (compiling source file 'Missile.cpp')
+  
+  Radar.cpp
+D:\repos\AircraftSimulation\AircraftSimulation\Radar.cpp(3,10): error C1083: Cannot open include file: 'SDL2/SDL_stdinc.h': No such file or directory
+  RenderManager.cpp
+D:\repos\AircraftSimulation\AircraftSimulation\RenderManager.h(2,10): error C1083: Cannot open include file: 'SDL2/SDL_image.h': No such file or directory
+  (compiling source file 'RenderManager.cpp')
+  
+  Simulation.cpp
+D:\repos\AircraftSimulation\AircraftSimulation\Button.h(2,10): error C1083: Cannot open include file: 'SDL2/SDL.h': No such file or directory
+  (compiling source file 'Simulation.cpp')
+  
+  Waypoint.cpp
+D:\repos\AircraftSimulation\AircraftSimulation\FileLoader.cpp(2,10): error C1083: Cannot open include file: 'INIReader.h': No such file or directory
+  (compiling source file 'Waypoint.cpp')
+  

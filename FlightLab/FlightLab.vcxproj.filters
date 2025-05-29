@@ -1,0 +1,105 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="main.cpp" />
+    <ClCompile Include="Utils\FileLoader.cpp">
+      <Filter>Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="Utils\utils.cpp">
+      <Filter>Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="Bind\flight_lab.cpp">
+      <Filter>Bind</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\World\CoordinateSystem.cpp">
+      <Filter>Engine\World</Filter>
+    </ClCompile>
+    <ClCompile Include="Objects\Aircraft.cpp">
+      <Filter>Objects</Filter>
+    </ClCompile>
+    <ClCompile Include="Objects\Missile.cpp">
+      <Filter>Objects</Filter>
+    </ClCompile>
+    <ClCompile Include="Objects\Radar.cpp">
+      <Filter>Objects</Filter>
+    </ClCompile>
+    <ClCompile Include="Objects\SimulationObject.cpp">
+      <Filter>Objects</Filter>
+    </ClCompile>
+    <ClCompile Include="Objects\Waypoint.cpp">
+      <Filter>Objects</Filter>
+    </ClCompile>
+    <ClCompile Include="Randerer\Button.cpp">
+      <Filter>Randerer</Filter>
+    </ClCompile>
+    <ClCompile Include="Randerer\RenderManager.cpp">
+      <Filter>Randerer</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Simulation.cpp">
+      <Filter>Engine</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Utils\enums.h">
+      <Filter>Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\World\CoordinateSystem.h">
+      <Filter>Engine\World</Filter>
+    </ClInclude>
+    <ClInclude Include="Objects\Aircraft.h">
+      <Filter>Objects</Filter>
+    </ClInclude>
+    <ClInclude Include="Objects\Missile.h">
+      <Filter>Objects</Filter>
+    </ClInclude>
+    <ClInclude Include="Objects\Radar.h">
+      <Filter>Objects</Filter>
+    </ClInclude>
+    <ClInclude Include="Objects\SimulationObject.h">
+      <Filter>Objects</Filter>
+    </ClInclude>
+    <ClInclude Include="Objects\Waypoint.h">
+      <Filter>Objects</Filter>
+    </ClInclude>
+    <ClInclude Include="Randerer\Button.h">
+      <Filter>Randerer</Filter>
+    </ClInclude>
+    <ClInclude Include="Randerer\RenderManager.h">
+      <Filter>Randerer</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Simulation.h">
+      <Filter>Engine</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Bind\setup.py">
+      <Filter>Bind</Filter>
+    </None>
+    <None Include="PyFlight\aircraft_behavior.py">
+      <Filter>PyFlight</Filter>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Randerer">
+      <UniqueIdentifier>{ea429d7a-6475-46fe-b719-ec0130fb9ac7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Objects">
+      <UniqueIdentifier>{00470fb8-a72a-4e43-8d19-c40faa24066f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine">
+      <UniqueIdentifier>{4cf19711-6e19-49c2-8acc-c4cdf7235346}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\World">
+      <UniqueIdentifier>{a69e3395-c945-40bb-834f-50bd0568b4c6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Bind">
+      <UniqueIdentifier>{b85799c1-c8d2-4b12-a104-b220b71111e3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="PyFlight">
+      <UniqueIdentifier>{faa582c5-653a-42e8-8069-25af976e79e2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Utils">
+      <UniqueIdentifier>{7c6f0bf9-90aa-411b-b8d4-72450b6bc76c}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>
