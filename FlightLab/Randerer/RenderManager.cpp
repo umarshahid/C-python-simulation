@@ -42,7 +42,7 @@ RenderManager::RenderManager() : window(nullptr), renderer(nullptr), quit(false)
         SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE
     );
 
-    std::cout << windowWidth << ", "<<windowHeight;
+    std::cout <<"Window Width: "<< windowWidth << ", Window Height: " << windowHeight << "\n";
 
     if (!window) {
         SDL_Quit();
@@ -161,7 +161,8 @@ void RenderManager::run() {
         Simulation::get_instance().simulation_update();
 
         SDL_RenderPresent(renderer);
-        SDL_Delay(16);
+        SDL_Delay(5);
+        //SDL_Delay(16);
     }
 
     Simulation::get_instance().set_running(false);
@@ -292,13 +293,15 @@ void RenderManager::drawAircraft(Aircraft* aircraft) const {
     SDL_QueryTexture(aircraftTexture, nullptr, nullptr, &texture_width, &texture_height);
 
     // Calculate the position for the aircraft image (centered around the coordinates)
-    SDL_Rect renderQuad = { screen_x - texture_width / 2, screen_y - texture_height / 2, texture_width, texture_height };
+    //SDL_Rect renderQuad = { screen_x - texture_width / 2, screen_y - texture_height / 2, texture_width, texture_height };
+    SDL_FRect renderQuad = { screen_x - texture_width / 2, screen_y - texture_height / 2, texture_width, texture_height };
 
     // Set aircraft color (based on the force)
     applyColorMod(aircraftTexture, aircraft->get_force());
 
     // Rotate the aircraft image based on its heading (rotate around its center)
-    SDL_RenderCopyEx(renderer, aircraftTexture, nullptr, &renderQuad, aircraft->get_heading(), nullptr, SDL_FLIP_NONE);
+    SDL_RenderCopyExF(renderer, aircraftTexture, nullptr, &renderQuad, aircraft->get_heading(), nullptr, SDL_FLIP_NONE);
+    //SDL_RenderCopyEx(renderer, aircraftTexture, nullptr, &renderQuad, aircraft->get_heading(), nullptr, SDL_FLIP_NONE);
 
     // Free the texture after rendering
     SDL_DestroyTexture(aircraftTexture);
@@ -508,7 +511,6 @@ void RenderManager::RenderPolygon(SDL_Renderer* renderer, OGRPolygon* polygon, d
         SDL_RenderDrawLine(renderer, x1, y1, x2, y2);
     }
 }
-
 
 void RenderManager::RenderShapefile(SDL_Renderer* renderer, const char* shapefilePath, int renderWidth, int renderHeight) {
     GDALAllRegister();

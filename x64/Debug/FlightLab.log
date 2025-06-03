@@ -1,16 +1,11 @@
 ﻿C:\Program Files\Microsoft Visual Studio\2022\Community\MSBuild\Microsoft\VC\v170\Microsoft.CppBuild.targets(538,5): warning MSB8028: The intermediate directory (D:\repos\FlightLab\x64\Debug\) contains files shared from another project (AircraftSimulation.vcxproj).  This can lead to incorrect clean and rebuild behavior.
-  flight_lab.cpp
-  Simulation.cpp
-D:\repos\FlightLab\FlightLab\Engine\Simulation.cpp(104,49): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-D:\repos\FlightLab\FlightLab\Engine\Simulation.cpp(104,46): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-D:\repos\FlightLab\FlightLab\Engine\Simulation.cpp(107,51): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-D:\repos\FlightLab\FlightLab\Engine\Simulation.cpp(107,48): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-D:\repos\FlightLab\FlightLab\Engine\Simulation.cpp(113,54): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-D:\repos\FlightLab\FlightLab\Engine\Simulation.cpp(113,51): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-D:\repos\FlightLab\FlightLab\Engine\Simulation.cpp(117,56): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-D:\repos\FlightLab\FlightLab\Engine\Simulation.cpp(117,53): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-D:\repos\FlightLab\FlightLab\Engine\Simulation.cpp(264,43): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
-D:\repos\FlightLab\FlightLab\Engine\Simulation.cpp(264,31): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
-  Generating Code...
+  Aircraft.cpp
+D:\repos\FlightLab\FlightLab\Objects\Aircraft.cpp(117,26): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+D:\repos\FlightLab\FlightLab\Objects\Aircraft.cpp(120,26): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+D:\repos\FlightLab\FlightLab\Objects\Aircraft.cpp(137,22): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+D:\repos\FlightLab\FlightLab\Objects\Aircraft.cpp(138,23): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+D:\repos\FlightLab\FlightLab\Objects\Aircraft.cpp(160,27): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+D:\repos\FlightLab\FlightLab\Objects\Aircraft.cpp(260,18): warning C4244: 'initializing': conversion from 'double' to 'int', possible loss of data
+D:\repos\FlightLab\FlightLab\Objects\Aircraft.cpp(261,18): warning C4244: 'initializing': conversion from 'double' to 'int', possible loss of data
   FlightLab.vcxproj -> D:\repos\FlightLab\x64\Debug\FlightLab.exe
   0 File(s) copied

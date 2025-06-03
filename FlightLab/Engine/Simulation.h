@@ -29,7 +29,9 @@ public:
 
     static Simulation& get_instance();
 
+    //double _dt = 1.0 / 60.0; // 50ms time step
     double _dt = 0.016; // 50ms time step
+    //double _dt = 0.008; // 50ms time step
 
     void render_aircrafts(std::string color);
     void add_aircraft(const std::string& name, const std::string& force, int health, float x, float y, float heading, float speed, CoordinateSystem& coordSystem);
@@ -86,7 +88,7 @@ private:
     py::scoped_interpreter guard{}; 
     //// Import Python script
 
-    //py::module behavior_module = py::module::import("aircraft_behavior");
+    py::module behavior_module = py::module::import("aircraft_behavior");
 
     //################################ python ################################
 };   

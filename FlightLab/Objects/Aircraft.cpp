@@ -126,6 +126,8 @@ void Aircraft::update_position(double dt) {
 
     // Clamp the change in heading
     heading += std::clamp(heading_diff, -rotation_speed, rotation_speed);
+    //heading += std::clamp(heading_diff, ( - rotation_speed * float(dt)), (rotation_speed * float(dt)));
+
 
     // Ensure heading remains within [-180, 180]
     if (heading > 180.0f) heading -= 360.0f;

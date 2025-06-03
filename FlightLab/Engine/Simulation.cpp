@@ -15,8 +15,8 @@ Simulation::Simulation(): running(false) //coordSystem(-90.0f, 90.0f, -180.0f, 1
     //################################ python ################################
 
     // Pass the simulation object to Python
-    //py::object py_sim = py::cast(this);
-    //behavior_module.attr("set_simulation")(py_sim);
+    py::object py_sim = py::cast(this);
+    behavior_module.attr("set_simulation")(py_sim);
 
     //################################ python ################################
 }
@@ -279,39 +279,41 @@ void Simulation::processSimulation() {
 }
 
 void Simulation::initialize() {
-//
-    processSimulation();
-//
-//    PyGILState_STATE gstate;
-//    gstate = PyGILState_Ensure();
-//
-//    try {
-//        // Call the Python function and capture the return value
-//        pybind11::object result = behavior_module.attr("call_once")();
-//
-//        // Process the returned value (example for a dictionary)
-//        if (pybind11::isinstance<pybind11::dict>(result)) {
-//            pybind11::dict result_dict = result.cast<pybind11::dict>();
-//            std::string status = pybind11::str(result_dict["status"]);
-//            pybind11::list data = result_dict["data"].cast<pybind11::list>();
-//
-//            std::cout << "Status: " << status << "\n";
-//            std::cout << "Data: ";
-//            for (auto item : data) {
-//                std::cout << item.cast<int>() << " ";
-//            }
-//            std::cout << "\n";
-//        }
-//        else {
-//            std::cerr << "Unexpected return type from call_once\n";
-//        }
-//    }
-//    catch (const pybind11::error_already_set& e) {
-//        std::cerr << "Python error: " << e.what() << "\n";
-//    }
-//
-//    PyGILState_Release(gstate);
-//
+// C++ Process call
+    //processSimulation();
+
+// Python Process call
+ 
+    PyGILState_STATE gstate;
+    gstate = PyGILState_Ensure();
+
+    try {
+        // Call the Python function and capture the return value
+        pybind11::object result = behavior_module.attr("call_once")();
+
+        // Process the returned value (example for a dictionary)
+        if (pybind11::isinstance<pybind11::dict>(result)) {
+            pybind11::dict result_dict = result.cast<pybind11::dict>();
+            std::string status = pybind11::str(result_dict["status"]);
+            pybind11::list data = result_dict["data"].cast<pybind11::list>();
+
+            std::cout << "Status: " << status << "\n";
+            std::cout << "Data: ";
+            for (auto item : data) {
+                std::cout << item.cast<int>() << " ";
+            }
+            std::cout << "\n";
+        }
+        else {
+            std::cerr << "Unexpected return type from call_once\n";
+        }
+    }
+    catch (const pybind11::error_already_set& e) {
+        std::cerr << "Python error: " << e.what() << "\n";
+    }
+
+    PyGILState_Release(gstate);
+
 }
 
 void Simulation::remove_aircraft(Aircraft* target) {
